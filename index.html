@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Employee Dashboard</title>
+</head>
+
+<body>
+    <div id="container">
+        <header>
+            <div id="dashboard">
+                <h1>Employee Dashboard</h1>
+                <input type="text" id="searchInput" placeholder="Search by name or email..." />
+                <button onclick="showFilter()" class="filterBtn">Filter</button>
+            </div>
+            <div id="filter">
+                <div>
+                    <span>Sort : </span>
+                    <select id="sortSelect" onchange="sortEmployees()">
+                        <option value="">--Select--</option>
+                        <option value="firstName">First Name</option>
+                        <option value="department">Department</option>
+                    </select>
+                    <span>Show : </span>
+                    <select id="pageSize" onchange="renderEmployees()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <button onclick="showForm()" id="addBtn">Add Employee</button>
+            </div>
+        </header>
+
+        <!-- Filter Sidebar -->
+        <div class="filterSidebar">
+            <aside id="filterSidebar" class="hidden">
+                <h3>Filter Employees</h3>
+                <input type="text" id="filterName" placeholder="First Name" />
+                <input type="text" id="filterDepartment" placeholder="Department" />
+                <input type="text" id="filterRole" placeholder="Role" />
+                <button onclick="applyFilters()">Apply</button>
+                <button onclick="clearFilters()">Clear</button>
+            </aside>
+        </div>
+
+        <!-- Employee List -->
+        <main id="employeeList"></main>
+
+        <!-- Form Modal -->
+        <div id="formModal" class="hidden">
+            <form id="employeeForm" onsubmit="submitForm(event)">
+                <h2 id="formTitle">Add Employee</h2>
+                <input type="hidden" id="employeeId" />
+                <input type="text" id="firstName" placeholder="First Name" required />
+                <input type="text" id="lastName" placeholder="Last Name" required />
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="text" id="department" placeholder="Department" required />
+                <input type="text" id="role" placeholder="Role" required />
+                <button type="submit">Save</button>
+                <button type="button" onclick="closeForm()">Cancel</button>
+                <div id="formError" class="error"></div>
+            </form>
+        </div>
+
+        <footer>
+            &copy; 2025 Employee Directory App. All right reserved
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
