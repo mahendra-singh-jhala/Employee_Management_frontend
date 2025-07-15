@@ -155,18 +155,31 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 10;
 }
 
 #employeeForm {
-    background: #f9f9f9; 
+    background: #f9f9f9;
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 500px;
-    max-height: 600px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    max-width: 700px;
+    max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.employee-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.employee-row input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 #formModal.hidden,

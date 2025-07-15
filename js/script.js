@@ -64,20 +64,6 @@ function clearFilters() {
     renderEmployees()
 }
 
-// show form add & edit employeee
-function showForm(edit = false) {
-    document.getElementById("formModal").classList.remove("hidden");
-    document.getElementById("formTitle").innerText = edit ? "Edit Employee" : "Add Employee";
-
-}
-
-// close form
-function closeForm() {
-    document.getElementById("employeeForm").reset();
-    document.getElementById("formModal").classList.add("hidden");
-    document.getElementById("formError").innerText = "";
-}
-
 // sort Employee
 function sortEmployees() {
     const sortBy = document.getElementById("sortSelect").value;
@@ -85,50 +71,99 @@ function sortEmployees() {
     renderEmployees();
 }
 
-// form submition
+
+// Add an employee row to the form
+function addEmployeeRow(data = {}) {
+    const container = document.getElementById("employeeRows");
+    const rowId = Date.now();
+    const row = document.createElement("div");
+    row.className = "employee-row";
+    row.dataset.rowId = rowId;
+
+    row.innerHTML = `
+        <input type="text" placeholder="First Name" class="firstName" value="${data.firstName || ''}" required />
+        <input type="text" placeholder="Last Name" class="lastName" value="${data.lastName || ''}" required />
+        <input type="email" placeholder="Email" class="email" value="${data.email || ''}" required />
+        <input type="text" placeholder="Department" class="department" value="${data.department || ''}" required />
+        <input type="text" placeholder="Role" class="role" value="${data.role || ''}" required />
+        <button type="button" onclick="this.parentElement.remove()">Remove</button>
+    `;
+    container.appendChild(row);
+}
+
+// Show form and reset rows
+function showForm(edit = false) {
+    document.getElementById("formModal").classList.remove("hidden");
+    document.getElementById("formTitle").innerText = edit ? "Edit Employee" : "Add Employee";
+    document.getElementById("employeeRows").innerHTML = "";
+
+    if (!edit) {
+        document.getElementById("employeeForm").dataset.editId = ""; 
+        addEmployeeRow();
+    }
+}
+
+
+// Form submission for multiple employees
 function submitForm(e) {
     e.preventDefault();
-    const id = document.getElementById("employeeId").value || Date.now().toString();
-    const employee = {
-        id,
-        firstName: document.getElementById("firstName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        department: document.getElementById("department").value.trim(),
-        role: document.getElementById("role").value.trim()
-    }
+    const rows = document.querySelectorAll("#employeeRows .employee-row");
+    let hasError = false;
+    const newEmployees = [];
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(employee.email)) {
-        document.getElementById("formError").innerText = "Invalid email format.";
-        return;
-    }
+    rows.forEach(row => {
+        const firstName = row.querySelector(".firstName").value.trim();
+        const lastName = row.querySelector(".lastName").value.trim();
+        const email = row.querySelector(".email").value.trim();
+        const department = row.querySelector(".department").value.trim();
+        const role = row.querySelector(".role").value.trim();
 
-    const index = employees.findIndex(emp => emp.id === id);
-    if (index > -1) {
-        employees[index] = employee;
+        if (!firstName || !lastName || !email || !department || !role) {
+            hasError = true;
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            hasError = true;
+            document.getElementById("formError").innerText = `Invalid email: ${email}`;
+            return;
+        }
+
+        const employee = {
+            id: document.getElementById("employeeForm").dataset.editId || (Date.now().toString() + Math.random().toString()),
+            firstName,
+            lastName,
+            email,
+            department,
+            role
+        };
+
+        newEmployees.push(employee);
+    });
+
+    if (hasError) return;
+
+    const editId = document.getElementById("employeeForm").dataset.editId;
+    if (editId) {
+        employees = employees.map(emp => emp.id === editId ? newEmployees[0] : emp);
     } else {
-        employees.push(employee);
+        employees = employees.concat(newEmployees);
     }
 
+    delete document.getElementById("employeeForm").dataset.editId;
     closeForm();
     renderEmployees();
-
 }
 
 // edit form 
 function editEmployee(id) {
     const emp = employees.find(e => e.id === id);
     if (!emp) return;
-
-    document.getElementById("employeeId").value = emp.id;
-    document.getElementById("firstName").value = emp.firstName;
-    document.getElementById("lastName").value = emp.lastName;
-    document.getElementById("email").value = emp.email;
-    document.getElementById("department").value = emp.department;
-    document.getElementById("role").value = emp.role;
-
     showForm(true);
+    addEmployeeRow(emp);
+    document.getElementById("employeeForm").dataset.editId = emp.id;
 }
+
 
 // delete employee
 function deleteEmployee(id) {
@@ -136,6 +171,13 @@ function deleteEmployee(id) {
         employees = employees.filter(e => e.id !== id);
         renderEmployees();
     }
+}
+
+// close form
+function closeForm() {
+    document.getElementById("employeeForm").reset();
+    document.getElementById("formModal").classList.add("hidden");
+    document.getElementById("formError").innerText = "";
 }
 
 // Initial demo data

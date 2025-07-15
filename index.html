@@ -54,13 +54,9 @@
         <div id="formModal" class="hidden">
             <form id="employeeForm" onsubmit="submitForm(event)">
                 <h2 id="formTitle">Add Employee</h2>
-                <input type="hidden" id="employeeId" />
-                <input type="text" id="firstName" placeholder="First Name" required />
-                <input type="text" id="lastName" placeholder="Last Name" required />
-                <input type="email" id="email" placeholder="Email" required />
-                <input type="text" id="department" placeholder="Department" required />
-                <input type="text" id="role" placeholder="Role" required />
-                <button type="submit">Save</button>
+                <div id="employeeRows"></div>
+                <button type="button" onclick="addEmployeeRow()">+ Add Row</button>
+                <button type="submit">Save All</button>
                 <button type="button" onclick="closeForm()">Cancel</button>
                 <div id="formError" class="error"></div>
             </form>
